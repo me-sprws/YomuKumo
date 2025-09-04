@@ -25,4 +25,26 @@ public static class DotNextResultExtensions
 
         return result;
     }
+    
+    /// <summary>
+    /// Проверить значение результата, если выполнено успешно.
+    /// </summary>
+    public static Optional<T> Inspect<T>(this Optional<T> optional, Action<T> action)
+    {
+        if (optional.HasValue)
+            action.Invoke(optional.Value);
+
+        return optional;
+    }
+    
+    /// <summary>
+    /// Проверить пустой результат.
+    /// </summary>
+    public static Optional<T> InspectNoValue<T>(this Optional<T> optional, Action action)
+    {
+        if (!optional.HasValue)
+            action.Invoke();
+
+        return optional;
+    }
 }

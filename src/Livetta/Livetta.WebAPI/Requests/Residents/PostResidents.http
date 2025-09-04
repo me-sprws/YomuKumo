@@ -3,7 +3,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "firstName": "Valentin2",
+  "firstName": "Valentin",
   "lastName": "Vorobey",
   "phone": "+74691230405"
 }
