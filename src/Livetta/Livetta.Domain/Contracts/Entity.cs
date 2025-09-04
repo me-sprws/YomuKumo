@@ -1,16 +1,15 @@
 namespace Livetta.Domain.Contracts;
 
-public abstract class Entity
+public interface IEntity
 {
-    protected Entity(Guid id)
+    Guid Id { get; }
+}
+
+public abstract class Entity(Guid id) : IEntity
+{
+    protected Entity() : this(Guid.NewGuid())
     {
-        Id = id;
     }
 
-    protected Entity()
-    {
-        
-    }
-
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = id;
 }

@@ -1,6 +1,7 @@
 using DotNext;
 using Livetta.Application.Contracts;
 using Livetta.Application.DTO.Residents;
+using Livetta.Domain.Contracts;
 using Livetta.Domain.Entities;
 using Livetta.Domain.Repositories;
 using Livetta.Domain.ValueObjects;
@@ -28,14 +29,14 @@ public class ResidentService(IResidentRepository residents) : IResidentService
             .Convert(x => Map(resident));
     }
 
-    static ResidentReadDto Map(Resident resident)
+    static ResidentReadDto Map(IResident resident)
     {
         var contacts = resident.Contacts;
         return new(resident.Id, resident.FullName, new(contacts.FirstName, contacts.LastName, contacts.Phone.ToString()));
     }
     
-    static Resident Map(ResidentCreateDto create)
+    static IResident Map(ResidentCreateDto create)
     {
-        return new(new Contacts(create.FirstName, create.LastName, Phone.CreateValid(create.Phone)));
+        return new Resident(new Contacts(create.FirstName, create.LastName, Phone.CreateValid(create.Phone)));
     }
 }

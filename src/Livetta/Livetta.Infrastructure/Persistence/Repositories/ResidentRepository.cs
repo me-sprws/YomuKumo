@@ -1,6 +1,7 @@
 using DotNext;
 using Livetta.Core;
 using Livetta.Core.Extensions;
+using Livetta.Domain.Contracts;
 using Livetta.Domain.Entities;
 using Livetta.Domain.Repositories;
 using Livetta.Domain.ValueObjects;
@@ -18,7 +19,7 @@ public class ResidentRepository : IResidentRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Optional<Resident>> Find(Guid id, CancellationToken ctk = default)
+    public async Task<Optional<IResident>> Find(Guid id, CancellationToken ctk = default)
     {
         return (await _dbContext.Residents
             .AsNoTracking()
@@ -29,7 +30,7 @@ public class ResidentRepository : IResidentRepository
         ).Convert(Map);
     }
 
-    public async Task<Result<Unit>> Create(Resident resident, CancellationToken ctk = default)
+    public async Task<Result<Unit>> Create(IResident resident, CancellationToken ctk = default)
     {
         try
         {
@@ -44,7 +45,7 @@ public class ResidentRepository : IResidentRepository
         return new();
     }
 
-    public async Task<Result<List<Resident>>> GetAll(CancellationToken ctk = default)
+    public async Task<Result<List<IResident>>> GetAll(CancellationToken ctk = default)
     {
         return (await _dbContext.Residents
             .AsNoTracking()
@@ -55,21 +56,21 @@ public class ResidentRepository : IResidentRepository
         ).Convert(x => x.Select(Map).ToList());
     }
     
-    static Resident Map(ResidentEntity? source)
+    static IResident Map(ResidentEntity? source)
     {
         if (source is null) return null;
         
         var contacts = source.Contacts;
-        return new(new Contacts(
+        return new Resident(new Contacts(
             contacts.FirstName,
             contacts.LastName,
-            Phone.CreateValidOrNull(contacts.Phone)))
+            Phone.CreateValidOrNull(contacts.Phone)), ArraySegment<IApartment>.Empty)
         {
             Id = source.Id
         };
     }
     
-    static ResidentEntity Map(Resident source) =>
+    static ResidentEntity Map(IResident source) =>
         new()
         {
             Id = source.Id,
