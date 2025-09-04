@@ -6,4 +6,12 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="DotNext" Version="5.24.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Livetta.Core\Livetta.Core.csproj" />
+    </ItemGroup>
+
 </Project>

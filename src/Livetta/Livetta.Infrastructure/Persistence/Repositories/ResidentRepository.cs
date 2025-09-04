@@ -1,3 +1,6 @@
+using DotNext;
+using Livetta.Core;
+using Livetta.Core.Extensions;
 using Livetta.Domain.Entities;
 using Livetta.Domain.Repositories;
 using Livetta.Domain.ValueObjects;
@@ -15,36 +18,47 @@ public class ResidentRepository : IResidentRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Resident?> Find(Guid id, CancellationToken ctk = default)
+    public async Task<Optional<Resident>> Find(Guid id, CancellationToken ctk = default)
     {
-        var resident = await _dbContext.Residents
+        return (await _dbContext.Residents
             .AsNoTracking()
             .Include(x => x.Contacts)
             .FirstOrDefaultAsync(x => x.Id == id, ctk)
-            .ConfigureAwait(false);
-
-        return resident is null ? null : Map(resident);
+            .Try()
+            .ConfigureAwait(false)
+        ).Convert(Map);
     }
 
-    public async Task Create(Resident resident, CancellationToken ctk = default)
+    public async Task<Result<Unit>> Create(Resident resident, CancellationToken ctk = default)
     {
-        await _dbContext.AddAsync(Map(resident), ctk).ConfigureAwait(false);
-        await _dbContext.SaveChangesAsync(ctk).ConfigureAwait(false);
+        try
+        {
+            await _dbContext.AddAsync(Map(resident), ctk).ConfigureAwait(false);
+            await _dbContext.SaveChangesAsync(ctk).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            return new(ex);
+        }
+
+        return new();
     }
 
-    public async Task<List<Resident>> GetAll(CancellationToken ctk = default)
+    public async Task<Result<List<Resident>>> GetAll(CancellationToken ctk = default)
     {
-        var residents = await _dbContext.Residents
+        return (await _dbContext.Residents
             .AsNoTracking()
             .Include(x => x.Contacts)
             .ToListAsync(ctk)
-            .ConfigureAwait(false);
-
-        return residents.Select(Map).ToList();
+            .Try()
+            .ConfigureAwait(false)
+        ).Convert(x => x.Select(Map).ToList());
     }
     
-    static Resident Map(ResidentEntity source)
+    static Resident Map(ResidentEntity? source)
     {
+        if (source is null) return null;
+        
         var contacts = source.Contacts;
         return new(new Contacts(
             contacts.FirstName,
