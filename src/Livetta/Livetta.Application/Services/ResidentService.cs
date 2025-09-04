@@ -1,3 +1,4 @@
+using DotNext;
 using Livetta.Application.Contracts;
 using Livetta.Application.DTO.Residents;
 using Livetta.Domain.Entities;
@@ -8,26 +9,23 @@ namespace Livetta.Application.Services;
 
 public class ResidentService(IResidentRepository residents) : IResidentService
 {
-    public async Task<ResidentReadDto?> GetById(Guid id, CancellationToken ctk = default)
+    public async Task<Optional<ResidentReadDto>> GetById(Guid id, CancellationToken ctk = default)
     {
-        if (await residents.Find(id, ctk).ConfigureAwait(false) is { } resident)
-            return Map(resident);
-
-        return null;
+        return (await residents.Find(id, ctk).ConfigureAwait(false)).Convert(Map);
     }
 
-    public async Task<ResidentReadDto[]> GetAll(CancellationToken ctk = default)
+    public async Task<Result<ResidentReadDto[]>> GetAll(CancellationToken ctk = default)
     {
-        var entities = await residents.GetAll(ctk).ConfigureAwait(false);
-        return entities.Select(Map).ToArray();
+        return (await residents.GetAll(ctk).ConfigureAwait(false))
+            .Convert(x => x.Select(Map).ToArray());
     }
 
-    public async Task<ResidentReadDto> Create(ResidentCreateDto request, CancellationToken ctk = default)
+    public async Task<Result<ResidentReadDto>> Create(ResidentCreateDto request, CancellationToken ctk = default)
     {
         var resident = Map(request);
-        await residents.Create(resident, ctk).ConfigureAwait(false);
-
-        return Map(resident);
+        
+        return (await residents.Create(resident, ctk).ConfigureAwait(false))
+            .Convert(x => Map(resident));
     }
 
     static ResidentReadDto Map(Resident resident)

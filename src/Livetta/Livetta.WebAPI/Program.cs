@@ -4,6 +4,7 @@ using Livetta.Application.Services;
 using Livetta.Domain.Repositories;
 using Livetta.Infrastructure.Persistence;
 using Livetta.Infrastructure.Persistence.Repositories;
+using Livetta.WebAPI.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
 
@@ -38,13 +39,19 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/resident/{id:guid}", (IResidentService service, Guid id, CancellationToken ctk = default) => 
-    service.GetById(id, ctk));
+app.MapGet(
+    "/resident/{id:guid}", 
+    async (IResidentService service, Guid id, CancellationToken ctk = default) => 
+        (await service.GetById(id, ctk).ConfigureAwait(false)).OrNotFound());
 
-app.MapGet("/resident", (IResidentService service, CancellationToken ctk = default) => 
-    service.GetAll(ctk));
+app.MapGet(
+    "/resident", 
+    async (IResidentService service, CancellationToken ctk = default) => 
+        (await service.GetAll(ctk).ConfigureAwait(false)).OrEmpty());
 
-app.MapPost("/resident", (IResidentService service, ResidentCreateDto create, CancellationToken ctk = default) => 
-    service.Create(create, ctk));
+app.MapPost(
+    "/resident", 
+    async (IResidentService service, ResidentCreateDto create, CancellationToken ctk = default) => 
+        (await service.Create(create, ctk).ConfigureAwait(false)).OrBadRequest());
 
 app.Run();

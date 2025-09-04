@@ -1,4 +1,4 @@
-@SampleId = bfccbcf6-4803-4654-b808-65d3f84473e2
+@SampleId = 6c6b21ab-447c-465d-8c44-10442c7e1fde
 
 GET {{livetta_api}}/resident/{{SampleId}}
 Accept: application/json
