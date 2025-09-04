@@ -1,0 +1,9 @@
+POST {{livetta_api}}/resident
+Content-Type: application/json
+Accept: application/json
+
+{
+  "firstName": "Valentin",
+  "lastName": "Vorobey",
+  "phone": "+74691230405"
+}

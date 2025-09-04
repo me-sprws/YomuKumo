@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Livetta.WebAPI", "Livetta.WebAPI\Livetta.WebAPI.csproj", "{C1FB48CB-04B9-431F-9403-EB661309A5C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Livetta.Domain", "Livetta.Domain\Livetta.Domain.csproj", "{CFE39FA3-E30F-481D-B6FC-1DFBC626BA16}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Livetta.Application", "Livetta.Application\Livetta.Application.csproj", "{947AF352-90DD-43A6-851C-E85BFD00CD7E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Livetta.Infrastructure", "Livetta.Infrastructure\Livetta.Infrastructure.csproj", "{1F254E8E-8F1E-4EA9-BCEC-DDF824385F09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Livetta.Core", "Livetta.Core\Livetta.Core.csproj", "{0B575F02-AB94-4220-B101-D7A8DEDD9CE3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C1FB48CB-04B9-431F-9403-EB661309A5C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1FB48CB-04B9-431F-9403-EB661309A5C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1FB48CB-04B9-431F-9403-EB661309A5C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1FB48CB-04B9-431F-9403-EB661309A5C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFE39FA3-E30F-481D-B6FC-1DFBC626BA16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFE39FA3-E30F-481D-B6FC-1DFBC626BA16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFE39FA3-E30F-481D-B6FC-1DFBC626BA16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFE39FA3-E30F-481D-B6FC-1DFBC626BA16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{947AF352-90DD-43A6-851C-E85BFD00CD7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{947AF352-90DD-43A6-851C-E85BFD00CD7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{947AF352-90DD-43A6-851C-E85BFD00CD7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{947AF352-90DD-43A6-851C-E85BFD00CD7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F254E8E-8F1E-4EA9-BCEC-DDF824385F09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F254E8E-8F1E-4EA9-BCEC-DDF824385F09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F254E8E-8F1E-4EA9-BCEC-DDF824385F09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F254E8E-8F1E-4EA9-BCEC-DDF824385F09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B575F02-AB94-4220-B101-D7A8DEDD9CE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B575F02-AB94-4220-B101-D7A8DEDD9CE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B575F02-AB94-4220-B101-D7A8DEDD9CE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B575F02-AB94-4220-B101-D7A8DEDD9CE3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

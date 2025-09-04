@@ -1,0 +1,2 @@
+GET {{livetta_api}}/resident
+Accept: application/json
