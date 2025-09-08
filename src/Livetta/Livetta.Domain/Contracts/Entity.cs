@@ -1,15 +1,9 @@
 namespace Livetta.Domain.Contracts;
 
-public interface IEntity
+public class Entity : IHasKey<Guid>, ITrackable
 {
-    Guid Id { get; }
-}
-
-public abstract class Entity(Guid id) : IEntity
-{
-    protected Entity() : this(Guid.NewGuid())
-    {
-    }
-
-    public Guid Id { get; set; } = id;
+    public Guid Id { get; set; }
+    public byte[] RowVersion { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
+    public DateTimeOffset UpdatedAt { get; set; }
 }

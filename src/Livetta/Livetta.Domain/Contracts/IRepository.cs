@@ -1,9 +1,15 @@
+using Livetta.Domain.Repositories;
+
 namespace Livetta.Domain.Contracts;
 
-public interface IRepository<T> where T : Entity
+public interface IRepository<TEntity> where TEntity : Entity
 {
-    Task<List<T>> Get(Func<IQueryable<T>, IQueryable<T>> query, CancellationToken ctk = default);
-    Task Create(T entity, CancellationToken ctk = default);
-    Task Update(T entity, CancellationToken ctk = default);
-    Task Delete(T entity, CancellationToken ctk = default);
+    IUnitOfWork UnitOfWork { get; }
+    IQueryable<TEntity> QueryableSet { get; }
+    
+    Task AddAsync(TEntity entity, CancellationToken ctk = default);
+    Task UpdateAsync(TEntity entity, CancellationToken ctk = default);
+    Task DeleteAsync(TEntity entity, CancellationToken ctk = default);
+    Task<TEntity?> FirstOrDefaultAsync(IQueryable<TEntity> query, Guid id, CancellationToken ctk = default);
+    Task<List<TEntity>> ToListAsync(IQueryable<TEntity> query, CancellationToken ctk = default);
 }
