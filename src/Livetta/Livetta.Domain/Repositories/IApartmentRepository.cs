@@ -3,4 +3,13 @@ using Livetta.Domain.Entities;
 
 namespace Livetta.Domain.Repositories;
 
-public interface IApartmentRepository : IRepository<Apartment>;
+public record GetApartmentOptions(
+    bool IncludeResidentApartments = false,
+    bool IncludeResidents = false,
+    bool AsNoTracking = false
+);
+
+public interface IApartmentRepository : IRepository<Apartment>
+{
+    IQueryable<Apartment> Get(GetApartmentOptions options);
+}

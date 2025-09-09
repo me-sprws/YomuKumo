@@ -23,4 +23,11 @@ public class ApartmentController(IApartmentService apartmentService) : Controlle
         await apartmentService.AssignAsync(residentId, apartmentId, request, ctk);
         return Ok();
     }
+    
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAll(CancellationToken ctk = default)
+    {
+        return Ok(await apartmentService.GetAllAsync(ctk));
+    }
 }

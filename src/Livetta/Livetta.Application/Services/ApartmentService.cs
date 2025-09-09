@@ -48,4 +48,10 @@ public sealed class ApartmentService(
         await residencesRepository.AddAsync(ra, ctk);
         await residencesRepository.UnitOfWork.SaveChangesAsync(ctk);
     }
+
+    public async Task<List<ApartmentReadDto>> GetAllAsync(CancellationToken ctk = default)
+    {
+        var query = apartmentRepository.Get(new(AsNoTracking: true));
+        return (await apartmentRepository.ToListAsync(query, ctk)).Select(x => x.ToDto()).ToList();
+    }
 }
