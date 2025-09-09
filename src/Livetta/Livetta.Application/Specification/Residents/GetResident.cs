@@ -8,6 +8,7 @@ public record GetResidentQuery(
     Guid Id,
     bool IncludeContacts, 
     bool IncludeApartments, 
+    bool IncludeResidentApartments, 
     bool AsNoTracking
 ) : IQuery<Resident?>;
 
@@ -15,7 +16,12 @@ public class GetResidentHandler(IResidentRepository repository) : IQueryHandle<G
 {
     public Task<Resident?> HandleAsync(GetResidentQuery query, CancellationToken ctk = default)
     {
-        var db = repository.Get(new(query.IncludeContacts, query.IncludeApartments, query.AsNoTracking));
+        var db = repository.Get(new(
+            query.IncludeContacts, 
+            query.IncludeApartments, 
+            query.IncludeResidentApartments,
+            query.AsNoTracking));
+        
         return repository.FirstOrDefaultAsync(db, query.Id, ctk);
     }
 }

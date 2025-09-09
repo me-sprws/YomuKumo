@@ -7,6 +7,15 @@ public static class ResidentExtensions
 {
     public static ResidentReadDto ToDto(this Resident resident)
     {
-        return new(resident.Id, resident.FirstName + " " + resident.LastName, resident.Contacts.ToDto());
+        return new(
+            resident.Id, 
+            resident.FirstName + " " + resident.LastName, 
+            resident.Contacts.ToDto(),
+            resident.Apartments.Select(ToDto).ToArray());
+    }
+
+    public static ResidentApartmentReadDto ToDto(this ResidentApartment ra)
+    {
+        return new(ra.ApartmentId, ra.Role);
     }
 }

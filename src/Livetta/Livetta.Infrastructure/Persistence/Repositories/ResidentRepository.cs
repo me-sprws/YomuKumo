@@ -10,6 +10,12 @@ public class ResidentRepository(LivettaDbContext dbContext) : Repository<Residen
     {
         var builder = QueryableSet;
 
+        if (options.IncludeResidentApartments)
+        {
+            builder = QueryableSet
+                .Include(x => x.Apartments);
+        }
+        
         if (options.IncludeApartments)
         {
             builder = QueryableSet

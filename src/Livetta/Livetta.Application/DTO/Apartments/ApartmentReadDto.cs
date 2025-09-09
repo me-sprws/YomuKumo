@@ -1,12 +1,11 @@
 namespace Livetta.Application.DTO.Apartments;
 
-public readonly record struct ApartmentReadDto(
+public record ApartmentReadDto(
     Guid Id, 
     string Address, 
     int Room, 
     int Floor, 
-    double Area, 
-    ApartmentResidentDto[] Residents
+    double Area
 );
 
-public readonly record struct ApartmentResidentDto(Guid ResidentId, Guid Role);
+public record ApartmentResidentDto(Guid ResidentId, Guid Role);

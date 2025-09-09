@@ -5,19 +5,39 @@ using Microsoft.AspNetCore.Mvc;
 namespace Livetta.WebAPI.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/v1/[controller]")]
+[Produces("application/json")]
 public class ResidentController(IResidentService residentService) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create(ResidentCreateDto request, CancellationToken ctk = default)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Post(ResidentCreateDto request, CancellationToken ctk = default)
     {
-        return Ok(await residentService.Create(request, ctk));
+        return Ok(await residentService.CreateAsync(request, ctk));
+    }
+    
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Get(Guid id, CancellationToken ctk = default)
+    {
+        return await residentService.FindAsync(id, ctk) is { } resident
+            ? Ok(resident)
+            : NotFound();
     }
     
     [HttpGet]
-    public async Task<IActionResult> Find([FromQuery] Guid id, CancellationToken ctk = default)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAll(CancellationToken ctk = default)
     {
-        return await residentService.Find(id, ctk) is { } resident
+        return Ok(await residentService.GetAll(ctk));
+    }
+    
+    [HttpGet("Apartment")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetApartments(Guid id, CancellationToken ctk = default)
+    {
+        return await residentService.FindAsync(id, ctk) is { } resident
             ? Ok(resident)
             : NotFound();
     }

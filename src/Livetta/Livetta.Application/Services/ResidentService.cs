@@ -6,21 +6,33 @@ using Livetta.Domain.Repositories;
 
 namespace Livetta.Application.Services;
 
-public class ResidentService(IResidentRepository residentRepository) : IResidentService
+public sealed class ResidentService(IResidentRepository residentRepository) : IResidentService
 {
-    public async Task<ResidentReadDto?> Find(Guid id, CancellationToken ctk = default)
+    public async Task<ResidentReadDto?> FindAsync(Guid id, CancellationToken ctk = default)
     {
         var query = residentRepository.Get(new(
             IncludeContacts: true, 
             IncludeApartments: false, 
-            AsNoTracking: false));
+            IncludeResidentApartments: true, 
+            AsNoTracking: true));
 
         return await residentRepository.FirstOrDefaultAsync(query, id, ctk) is not { } resident
             ? null
             : resident.ToDto();
     }
 
-    public async Task<ResidentReadDto> Create(ResidentCreateDto request, CancellationToken ctk = default)
+    public async Task<List<ResidentReadDto>> GetAll(CancellationToken ctk = default)
+    {
+        var query = residentRepository.Get(new(
+            IncludeContacts: true, 
+            IncludeApartments: false, 
+            IncludeResidentApartments: true, 
+            AsNoTracking: true));
+
+        return (await residentRepository.ToListAsync(query, ctk)).Select(x => x.ToDto()).ToList();
+    }
+
+    public async Task<ResidentReadDto> CreateAsync(ResidentCreateDto request, CancellationToken ctk = default)
     {
         Resident resident = new()
         {

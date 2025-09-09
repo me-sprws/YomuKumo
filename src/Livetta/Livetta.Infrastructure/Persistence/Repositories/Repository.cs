@@ -27,6 +27,11 @@ public abstract class Repository<TEntity>(LivettaDbContext dbContext) : IReposit
         return Task.CompletedTask;
     }
 
+    public Task<bool> AnyAsync(Guid id, CancellationToken ctk = default)
+    {
+        return QueryableSet.AnyAsync(x => x.Id == id, ctk);
+    }
+
     public Task<TEntity?> FirstOrDefaultAsync(IQueryable<TEntity> query, Guid id, CancellationToken ctk = default)
     {
         return query.FirstOrDefaultAsync(x => x.Id == id, ctk);
