@@ -1,24 +1,22 @@
-using Livetta.Infrastructure.Persistence.Entities;
+using Livetta.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Livetta.Infrastructure.Persistence.EntityConfigurations;
 
-public class ContactsConfiguration : IEntityTypeConfiguration<ContactsEntity>
+public class ContactsConfiguration : IEntityTypeConfiguration<Contacts>
 {
-    public void Configure(EntityTypeBuilder<ContactsEntity> builder)
+    public void Configure(EntityTypeBuilder<Contacts> builder)
     {
-        builder.ToTable("contacts");
         builder.HasKey(x => x.Id);
         
-        builder.Property(x => x.FirstName).HasMaxLength(30);
-        builder.Property(x => x.LastName).HasMaxLength(30);
         builder.Property(x => x.Phone).HasMaxLength(20);
+        builder.Property(x => x.Email).HasMaxLength(50);
         
         builder
-            .HasOne(x => x.Resident)
+            .HasOne<Resident>()
             .WithOne(x => x.Contacts)
-            .HasForeignKey<ContactsEntity>(x => x.ResidentId)
+            .HasForeignKey<Contacts>(x => x.ResidentId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

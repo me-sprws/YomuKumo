@@ -1,41 +1,52 @@
-using DotNext;
 using Livetta.Application.Contracts;
 using Livetta.Application.DTO.Residents;
+using Livetta.Application.Extensions.DTOs;
 using Livetta.Domain.Entities;
 using Livetta.Domain.Repositories;
-using Livetta.Domain.ValueObjects;
 
 namespace Livetta.Application.Services;
 
-public class ResidentService(IResidentRepository residents) : IResidentService
+public sealed class ResidentService(IResidentRepository residentRepository) : IResidentService
 {
-    public async Task<Optional<ResidentReadDto>> GetById(Guid id, CancellationToken ctk = default)
+    public async Task<ResidentIdReadDto?> FindAsync(Guid id, CancellationToken ctk = default)
     {
-        return (await residents.Find(id, ctk).ConfigureAwait(false)).Convert(Map);
+        var query = residentRepository.Get(new(
+            IncludeContacts: true, 
+            IncludeApartments: true,
+            IncludeResidentApartments: true, 
+            AsNoTracking: true));
+
+        return await residentRepository.FirstOrDefaultAsync(query, id, ctk) is not { } resident
+            ? null
+            : resident.ToIdDto();
     }
 
-    public async Task<Result<ResidentReadDto[]>> GetAll(CancellationToken ctk = default)
+    public async Task<List<ResidentListReadDto>> GetAll(CancellationToken ctk = default)
     {
-        return (await residents.GetAll(ctk).ConfigureAwait(false))
-            .Convert(x => x.Select(Map).ToArray());
+        var query = residentRepository.Get(new(
+            IncludeContacts: true, 
+            IncludeResidentApartments: true, 
+            AsNoTracking: true));
+
+        return (await residentRepository.ToListAsync(query, ctk)).Select(x => x.ToListDto()).ToList();
     }
 
-    public async Task<Result<ResidentReadDto>> Create(ResidentCreateDto request, CancellationToken ctk = default)
+    public async Task<ResidentListReadDto> CreateAsync(ResidentCreateDto request, CancellationToken ctk = default)
     {
-        var resident = Map(request);
-        
-        return (await residents.Create(resident, ctk).ConfigureAwait(false))
-            .Convert(x => Map(resident));
-    }
+        Resident resident = new()
+        {
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            Contacts = new()
+            {
+                Phone = request.Phone,
+                Email = request.Email
+            }
+        };
 
-    static ResidentReadDto Map(Resident resident)
-    {
-        var contacts = resident.Contacts;
-        return new(resident.Id, resident.FullName, new(contacts.FirstName, contacts.LastName, contacts.Phone.ToString()));
-    }
-    
-    static Resident Map(ResidentCreateDto create)
-    {
-        return new(new Contacts(create.FirstName, create.LastName, Phone.CreateValid(create.Phone)));
+        await residentRepository.AddAsync(resident, ctk);
+        await residentRepository.UnitOfWork.SaveChangesAsync(ctk);
+
+        return resident.ToListDto();
     }
 }

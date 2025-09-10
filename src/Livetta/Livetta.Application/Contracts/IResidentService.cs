@@ -1,11 +1,10 @@
-using DotNext;
 using Livetta.Application.DTO.Residents;
 
 namespace Livetta.Application.Contracts;
 
 public interface IResidentService
 {
-    Task<Optional<ResidentReadDto>> GetById(Guid id, CancellationToken ctk = default);
-    Task<Result<ResidentReadDto[]>> GetAll(CancellationToken ctk = default);
-    Task<Result<ResidentReadDto>> Create(ResidentCreateDto request, CancellationToken ctk = default);
+    Task<ResidentIdReadDto?> FindAsync(Guid id, CancellationToken ctk = default);
+    Task<List<ResidentListReadDto>> GetAll(CancellationToken ctk = default);
+    Task<ResidentListReadDto> CreateAsync(ResidentCreateDto request, CancellationToken ctk = default);
 }

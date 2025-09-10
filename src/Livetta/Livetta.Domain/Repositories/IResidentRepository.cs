@@ -1,12 +1,16 @@
-using DotNext;
-using Livetta.Core;
+using Livetta.Domain.Contracts;
 using Livetta.Domain.Entities;
 
 namespace Livetta.Domain.Repositories;
 
-public interface IResidentRepository
+public record GetResidentOptions(
+    bool IncludeContacts = false,
+    bool IncludeApartments = false,
+    bool IncludeResidentApartments = false,
+    bool AsNoTracking = false
+);
+
+public interface IResidentRepository : IRepository<Resident>
 {
-    Task<Optional<Resident>> Find(Guid id, CancellationToken ctk = default);
-    Task<Result<Unit>> Create(Resident resident, CancellationToken ctk = default);
-    Task<Result<List<Resident>>> GetAll(CancellationToken ctk = default);
+    IQueryable<Resident> Get(GetResidentOptions options);
 }
