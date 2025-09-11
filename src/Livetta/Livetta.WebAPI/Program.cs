@@ -20,6 +20,17 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer(options =>
+    {
+        options.Authority = "http://localhost:5200";
+
+        if (builder.Environment.IsDevelopment())
+            options.RequireHttpsMetadata = false;
+        
+        options.TokenValidationParameters.ValidateAudience = false;
+    });
+
 builder.Services.AddDbContext<LivettaDbContext>(options =>
     options.UseNpgsql(builder.Configuration["Database:ConnectionString"])
            .UseSnakeCaseNamingConvention());
@@ -69,5 +80,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.MapControllers();
+
+app.MapGet("/security", () => "Secured.")
+   .RequireAuthorization()
+   // .RequireAuthorization(p => 
+   //     p.RequireClaim("client_claim"))
+   ;
 
 await app.RunAsync().ConfigureAwait(false);
