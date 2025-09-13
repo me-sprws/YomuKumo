@@ -1,0 +1,3 @@
+GET {{livetta_api}}/chats/{{chatId}}/messages?take=10&offset=0
+Accept: application/json
+Authorization: Bearer {{jwt}}

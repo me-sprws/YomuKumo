@@ -14,6 +14,14 @@ public static class ResidentExtensions
             resident.Apartments.Select(a => a.ToFullDto()).ToArray());
     }
     
+    public static ResidentReadShortDto ToShortDto(this Resident resident)
+    {
+        return new(
+            resident.Id, 
+            resident.FirstName + " " + resident.LastName, 
+            resident.Contacts.ToDto());
+    }
+    
     public static ResidentListReadDto ToListDto(this Resident resident)
     {
         return new(

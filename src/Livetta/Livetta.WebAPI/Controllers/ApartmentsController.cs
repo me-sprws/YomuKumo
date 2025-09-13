@@ -7,7 +7,7 @@ namespace Livetta.WebAPI.Controllers;
 [ApiController]
 [Route("api/v1/[controller]")]
 [Produces("application/json")]
-public class ApartmentController(IApartmentService apartmentService) : ControllerBase
+public class ApartmentsController(IApartmentService apartmentService) : ControllerBase
 {
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]

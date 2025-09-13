@@ -1,0 +1,8 @@
+POST {{livetta_api}}/chats/{{chatId}}/messages
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+{
+  "text": "Hello world 2!"
+}

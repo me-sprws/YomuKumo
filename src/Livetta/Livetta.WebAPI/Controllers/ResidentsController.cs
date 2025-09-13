@@ -7,7 +7,7 @@ namespace Livetta.WebAPI.Controllers;
 [ApiController]
 [Route("api/v1/[controller]")]
 [Produces("application/json")]
-public class ResidentController(IResidentService residentService) : ControllerBase
+public class ResidentsController(IResidentService residentService) : ControllerBase
 {
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]

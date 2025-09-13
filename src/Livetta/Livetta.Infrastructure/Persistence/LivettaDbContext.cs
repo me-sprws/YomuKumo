@@ -1,5 +1,6 @@
 using Livetta.Domain.Contracts;
 using Livetta.Domain.Entities;
+using Livetta.Domain.Entities.Messaging;
 using Livetta.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -17,6 +18,9 @@ public sealed class LivettaDbContext : DbContext, IUnitOfWork
     public DbSet<Contacts> Contacts => Set<Contacts>();
     public DbSet<Resident> Residents => Set<Resident>();
     public DbSet<Apartment> Apartments => Set<Apartment>();
+    
+    public DbSet<Chat> Chats => Set<Chat>();
+    public DbSet<Message> Messages => Set<Message>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -66,12 +70,15 @@ public sealed class LivettaDbContext : DbContext, IUnitOfWork
         foreach (var trackableEntity in ChangeTracker.Entries().Where(x => x.Entity is ITrackable))
         {
             var trackable = (ITrackable) trackableEntity.Entity;
-            
+
             if (trackableEntity.State is EntityState.Added)
+            {
                 trackable.CreatedAt = DateTimeOffset.UtcNow;
+                trackable.UpdatedAt = DateTimeOffset.UtcNow;
+            }
             
             if (trackableEntity.State is EntityState.Modified)
-                trackable.UpdatedAt = DateTimeOffset.Now;
+                trackable.UpdatedAt = DateTimeOffset.UtcNow;
 
             trackable.RowVersion = Guid.NewGuid().ToByteArray();
         }

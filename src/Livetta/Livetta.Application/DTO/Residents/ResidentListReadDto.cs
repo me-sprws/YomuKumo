@@ -6,6 +6,8 @@ namespace Livetta.Application.DTO.Residents;
 
 public abstract record ResidentReadDtoBase(Guid Id, string FullName, ContactsReadDto? Contacts);
 
+public record ResidentReadShortDto(Guid Id, string FullName, ContactsReadDto? Contacts) : ResidentReadDtoBase(Id, FullName, Contacts);
+
 public record ResidentListReadDto(Guid Id, string FullName, ContactsReadDto? Contacts, ResidentApartmentReadDto[] Apartments) 
     : ResidentReadDtoBase(Id, FullName, Contacts);
 

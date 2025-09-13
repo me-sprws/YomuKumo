@@ -1,0 +1,6 @@
+POST {{livetta_api}}/chats
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+{}

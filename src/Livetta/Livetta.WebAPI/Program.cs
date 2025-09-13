@@ -1,9 +1,13 @@
+using System.Security.Claims;
+using System.Text;
 using Livetta.Application.Contracts;
 using Livetta.Application.Services;
 using Livetta.Domain.Repositories;
 using Livetta.Infrastructure.Persistence;
 using Livetta.Infrastructure.Persistence.Repositories;
+using Livetta.Security.Policies;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
 using Serilog;
 
@@ -23,13 +27,25 @@ builder.Host.UseSerilog();
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(options =>
     {
-        options.Authority = "http://localhost:5200";
+        options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
 
-        if (builder.Environment.IsDevelopment())
-            options.RequireHttpsMetadata = false;
+        var jwtKey = builder.Configuration.GetValue<string>("Jwt:SecretKey")!;
         
-        options.TokenValidationParameters.ValidateAudience = false;
+        options.TokenValidationParameters = new()
+        {
+            ValidateIssuer = false,     // Проверка издателя
+            ValidateAudience = false,   // Проверка получателя
+            ValidateLifetime = true,    // Проверка срока жизни
+            ValidateIssuerSigningKey = true, // Проверка подписи
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        };
     });
+
+builder.Services.AddAuthorization(op =>
+{
+    op.AddPolicy(LivettaPolicy.Messaging.CanCreateChats, p => 
+        p.RequireAuthenticatedUser());
+});
 
 builder.Services.AddDbContext<LivettaDbContext>(options =>
     options.UseNpgsql(builder.Configuration["Database:ConnectionString"])
@@ -50,6 +66,12 @@ builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
 
 builder.Services.AddScoped<IApartmentService, ApartmentService>();
 builder.Services.AddScoped<IApartmentRepository, ApartmentRepository>();
+
+builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
+
+builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
 builder.Services.AddScoped<IResidencesRepository, ResidencesRepository>();
 
@@ -82,9 +104,7 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.MapGet("/security", () => "Secured.")
-   .RequireAuthorization()
-   // .RequireAuthorization(p => 
-   //     p.RequireClaim("client_claim"))
-   ;
+   .RequireAuthorization(p => 
+       p.RequireClaim(ClaimTypes.Name));
 
 await app.RunAsync().ConfigureAwait(false);

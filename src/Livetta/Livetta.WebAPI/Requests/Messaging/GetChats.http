@@ -1,0 +1,3 @@
+GET {{livetta_api}}/chats
+Accept: application/json
+Authorization: Bearer {{jwt}}
