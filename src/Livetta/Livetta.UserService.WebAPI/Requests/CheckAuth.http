@@ -1,0 +1,5 @@
+GET {{livetta_id_api}}/test
+Accept: application/json
+Authorization: Bearer {{jwt}} 
+
+###

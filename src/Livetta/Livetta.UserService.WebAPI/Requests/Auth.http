@@ -1,0 +1,4 @@
+POST {{livetta_id_api}}/auth
+Accept: application/json
+
+###
