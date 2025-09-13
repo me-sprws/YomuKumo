@@ -57,7 +57,7 @@ app.MapPost("/auth", () =>
         issuer: "Livetta",
         audience: "Livetta",
         claims: claims,
-        expires: DateTime.Now.AddMinutes(10),
+        expires: DateTime.Now.AddDays(30),
         signingCredentials: credentials);
 
     return Results.Ok(new JwtSecurityTokenHandler().WriteToken(token));
