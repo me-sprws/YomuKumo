@@ -6,7 +6,10 @@ using Livetta.Domain.Repositories;
 
 namespace Livetta.Application.Services;
 
-public sealed class MessageService(IMessageRepository messageRepository) : IMessageService
+public sealed class MessageService(
+    IMessageRepository messageRepository,
+    INotificationService notificationService
+) : IMessageService
 {
     public async Task<MessageReadDto[]> GetMessagesAsync(Guid chatId, int take, int offset)
     {
@@ -27,6 +30,10 @@ public sealed class MessageService(IMessageRepository messageRepository) : IMess
         await messageRepository.AddAsync(message);
         await messageRepository.UnitOfWork.SaveChangesAsync();
 
-        return message.ToDto();
+        var messageDto = message.ToDto();
+        
+        await notificationService.OnChatMessageAsync(chatId, messageDto);
+
+        return messageDto;
     }
 }

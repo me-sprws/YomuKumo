@@ -17,6 +17,12 @@ public class ChatRepository(LivettaDbContext dbContext) : Repository<Chat>(dbCon
                 .ThenInclude(x => x.Resident)
                 .ThenInclude(x => x.Contacts);
         }
+
+        if (options.ResidentId != default)
+        {
+            builder = builder.Where(ch =>
+                ch.Residents.Any(r => r.ResidentId == options.ResidentId));
+        }
         
         if (options.IncludeFirstMessage)
         {

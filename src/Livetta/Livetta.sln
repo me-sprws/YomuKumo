@@ -12,8 +12,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Livetta.Core", "Livetta.Cor
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{55EB0D60-3CC3-40DD-8565-6D77D4962DBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Livetta.UserService.WebAPI", "Livetta.UserService.WebAPI\Livetta.UserService.WebAPI.csproj", "{6E96D39F-5CDC-45B9-A9C5-A06005A05B55}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Livetta.Security.Policies", "Livetta.Security.Policies\Livetta.Security.Policies.csproj", "{DDE2E3EA-3772-4644-BB3D-DB587C48A490}"
 EndProject
 Global
@@ -42,10 +40,6 @@ Global
 		{0B575F02-AB94-4220-B101-D7A8DEDD9CE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B575F02-AB94-4220-B101-D7A8DEDD9CE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B575F02-AB94-4220-B101-D7A8DEDD9CE3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6E96D39F-5CDC-45B9-A9C5-A06005A05B55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6E96D39F-5CDC-45B9-A9C5-A06005A05B55}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6E96D39F-5CDC-45B9-A9C5-A06005A05B55}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6E96D39F-5CDC-45B9-A9C5-A06005A05B55}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DDE2E3EA-3772-4644-BB3D-DB587C48A490}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DDE2E3EA-3772-4644-BB3D-DB587C48A490}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDE2E3EA-3772-4644-BB3D-DB587C48A490}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -53,6 +47,5 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C1FB48CB-04B9-431F-9403-EB661309A5C7} = {55EB0D60-3CC3-40DD-8565-6D77D4962DBC}
-		{6E96D39F-5CDC-45B9-A9C5-A06005A05B55} = {55EB0D60-3CC3-40DD-8565-6D77D4962DBC}
 	EndGlobalSection
 EndGlobal

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Livetta.Application.Contracts;
 using Livetta.Application.DTO.Chats;
 using Livetta.Application.DTO.Messages;
@@ -45,9 +46,8 @@ public sealed class ChatsController(
         return Ok(await messageService.CreateAsync(chatId, GetRequestResidentId(), request));
     }
 
-    static Guid GetRequestResidentId()
+    Guid GetRequestResidentId()
     {
-        // TODO: из UserIdentity берем ID пользователя и используем, но пока делаем вот так:
-        return Guid.Parse("01992b6c-fb6f-7ca6-a0fb-9a2eeff0bdeb");
+        return Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
     }
 }

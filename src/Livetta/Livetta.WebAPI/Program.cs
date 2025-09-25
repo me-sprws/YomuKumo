@@ -1,14 +1,5 @@
-using System.Security.Claims;
-using System.Text;
-using Livetta.Application.Contracts;
-using Livetta.Application.Services;
-using Livetta.Domain.Repositories;
-using Livetta.Infrastructure.Persistence;
-using Livetta.Infrastructure.Persistence.Repositories;
-using Livetta.Security.Policies;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Serialization;
+using Livetta.WebAPI;
+using Livetta.WebAPI.Hubs;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,67 +15,12 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
-builder.Services.AddAuthentication("Bearer")
-    .AddJwtBearer(options =>
-    {
-        options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
-
-        var jwtKey = builder.Configuration.GetValue<string>("Jwt:SecretKey")!;
-        
-        options.TokenValidationParameters = new()
-        {
-            ValidateIssuer = false,     // Проверка издателя
-            ValidateAudience = false,   // Проверка получателя
-            ValidateLifetime = true,    // Проверка срока жизни
-            ValidateIssuerSigningKey = true, // Проверка подписи
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
-        };
-    });
-
-builder.Services.AddAuthorization(op =>
-{
-    op.AddPolicy(LivettaPolicy.Messaging.CanCreateChats, p => 
-        p.RequireAuthenticatedUser());
-});
-
-builder.Services.AddDbContext<LivettaDbContext>(options =>
-    options.UseNpgsql(builder.Configuration["Database:ConnectionString"])
-           .UseSnakeCaseNamingConvention());
-
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new()
-    {
-        Title = "Livetta API",
-        Version = "v1",
-        Description = "An Livetta Web API with Swagger"
-    });
-});
-
-builder.Services.AddScoped<IResidentService, ResidentService>();
-builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
-
-builder.Services.AddScoped<IApartmentService, ApartmentService>();
-builder.Services.AddScoped<IApartmentRepository, ApartmentRepository>();
-
-builder.Services.AddScoped<IChatService, ChatService>();
-builder.Services.AddScoped<IChatRepository, ChatRepository>();
-
-builder.Services.AddScoped<IMessageService, MessageService>();
-builder.Services.AddScoped<IMessageRepository, MessageRepository>();
-
-builder.Services.AddScoped<IResidencesRepository, ResidencesRepository>();
-
-builder.Services.AddControllers()
-    .AddNewtonsoftJson(
-        options =>
-        {
-            var serializer = options.SerializerSettings;
-            
-            serializer.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            // serializer.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-        }
-    );
+builder.AddLivettaAuthentication()
+       .AddLivettaAuthorization()
+       .AddEntityFrameworkCore()
+       .AddLivettaSwaggerGen()
+       .AddLivettaEndpoints()
+       .AddLivettaServices();
 
 var app = builder.Build();
 
@@ -101,10 +37,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.MapControllers();
+app.MapHub<ChatHub>("/hub/chat");
 
-app.MapGet("/security", () => "Secured.")
-   .RequireAuthorization(p => 
-       p.RequireClaim(ClaimTypes.Name));
-
-await app.RunAsync().ConfigureAwait(false);
+await app.RunAsync();

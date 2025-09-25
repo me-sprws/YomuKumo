@@ -4,6 +4,7 @@ using Livetta.Domain.Entities.Messaging;
 namespace Livetta.Domain.Repositories;
 
 public record GetChatOptions(
+    Guid ResidentId = default,
     bool IncludeResidents = false,
     bool IncludeFirstMessage = false,
     bool AsNoTracking = false    
