@@ -5,8 +5,10 @@ using Livetta.Domain.Repositories;
 using Livetta.Infrastructure.Persistence;
 using Livetta.Infrastructure.Persistence.Repositories;
 using Livetta.Security.Policies;
+using Livetta.WebAPI.Authorization;
 using Livetta.WebAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
@@ -46,7 +48,11 @@ internal static class DependencyInjection
         builder.Services.AddAuthorizationBuilder()
             .AddPolicy(
                 LivettaPolicy.Messaging.CanCreateChats,
-                p => p.RequireAuthenticatedUser());
+                p => p.RequireAuthenticatedUser())
+            .AddPolicy(LivettaPolicy.Messaging.ChatMember,
+                p => p.Requirements.Add(new ChatMemberRequirement()));
+
+        builder.Services.AddScoped<IAuthorizationHandler, ChatMemberAuthHandler>();
 
         return builder;
     }

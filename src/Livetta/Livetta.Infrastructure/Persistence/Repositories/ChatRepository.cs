@@ -17,6 +17,11 @@ public class ChatRepository(LivettaDbContext dbContext) : Repository<Chat>(dbCon
                 .ThenInclude(x => x.Resident)
                 .ThenInclude(x => x.Contacts);
         }
+        
+        if (options.ChatId != default)
+        {
+            builder = builder.Where(ch => ch.Id == options.ChatId);
+        }
 
         if (options.ResidentId != default)
         {
@@ -24,9 +29,9 @@ public class ChatRepository(LivettaDbContext dbContext) : Repository<Chat>(dbCon
                 ch.Residents.Any(r => r.ResidentId == options.ResidentId));
         }
         
-        if (options.IncludeFirstMessage)
+        if (options.IncludeLastMessage)
         {
-            builder = builder.Include(x => x.Messages.Take(1));
+            builder = builder.Include(x => x.Messages.OrderByDescending(m => m.CreatedAt).Take(1));
         }
 
         if (options.AsNoTracking)
@@ -35,5 +40,11 @@ public class ChatRepository(LivettaDbContext dbContext) : Repository<Chat>(dbCon
         }
 
         return builder;
+    }
+
+    public Task<bool> IsChatMemberAsync(Guid residentId, Guid chatId)
+    {
+        return AnyAsync(QueryableSet.Where(
+            ch => chatId == ch.Id && ch.Residents.Any(r => r.ResidentId == residentId)));
     }
 }

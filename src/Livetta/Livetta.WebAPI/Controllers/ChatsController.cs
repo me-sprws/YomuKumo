@@ -3,6 +3,7 @@ using Livetta.Application.Contracts;
 using Livetta.Application.DTO.Chats;
 using Livetta.Application.DTO.Messages;
 using Livetta.Security.Policies;
+using Livetta.WebAPI.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,28 +14,31 @@ namespace Livetta.WebAPI.Controllers;
 [Produces("application/json")]
 public sealed class ChatsController(
     IChatService chatService,
-    IMessageService messageService
+    IMessageService messageService,
+    IAuthorizationService authorizationService
 ) : ControllerBase
 {
     [HttpPost]
     [Authorize(Policy = LivettaPolicy.Messaging.CanCreateChats)]
-    public async Task<IActionResult> Post(ChatCreateDto request)
+    public async Task<IActionResult> CreateChat(ChatCreateDto request)
     {
-        return Ok(await chatService.CreateAsync(GetRequestResidentId(), request));
+        return Ok(await chatService.CreateAsync(GetUserId(), request));
     }
     
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAllChats()
     {
-        return Ok(await chatService.GetAllAsync(GetRequestResidentId()));
+        return Ok(await chatService.GetAllAsync(GetUserId()));
     }
     
     [HttpGet("{chatId:guid}/messages")]
     [Authorize]
     public async Task<IActionResult> GetMessages(Guid chatId, int take, int offset)
     {
-        // TODO: проверка относится ли пользователь к чату
+        if (!await RequireChatMemberAsync(chatId))
+            return Forbid();
+        
         return Ok(await messageService.GetMessagesAsync(chatId, take, offset));
     }
     
@@ -42,12 +46,18 @@ public sealed class ChatsController(
     [Authorize]
     public async Task<IActionResult> CreateMessage(Guid chatId, MessageCreateDto request)
     {
-        // TODO: проверка относится ли пользователь к чату
-        return Ok(await messageService.CreateAsync(chatId, GetRequestResidentId(), request));
+        if (!await RequireChatMemberAsync(chatId))
+            return Forbid();
+        
+        return Ok(await messageService.CreateAsync(chatId, GetUserId(), request));
     }
 
-    Guid GetRequestResidentId()
-    {
-        return Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-    }
+    Guid GetUserId() => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+    async Task<bool> RequireChatMemberAsync(Guid chatId) =>
+        (await authorizationService.AuthorizeAsync(
+            User, 
+            new ChatMemberAuthContext(chatId), 
+            LivettaPolicy.Messaging.ChatMember)
+        ).Succeeded;
 }

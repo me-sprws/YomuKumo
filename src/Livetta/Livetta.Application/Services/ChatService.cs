@@ -31,7 +31,7 @@ public sealed class ChatService(IResidentRepository residentRepository, IChatRep
 
     public async Task<ChatReadDto[]> GetAllAsync(Guid residentId)
     {
-        var db = chatRepository.Get(new(IncludeResidents: true, IncludeFirstMessage: true, AsNoTracking: true));
+        var db = chatRepository.Get(new(ResidentId: residentId, IncludeResidents: true, IncludeLastMessage: true, AsNoTracking: true));
         return (await chatRepository.ToListAsync(db)).Select(x => x.ToDto()).ToArray();
     }
 }
