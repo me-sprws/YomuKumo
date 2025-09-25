@@ -1,6 +1,5 @@
 using Livetta.Application.Contracts;
 using Livetta.Application.DTO.Messages;
-using Livetta.Infrastructure.Services;
 using Livetta.WebAPI.Hubs;
 using Microsoft.AspNetCore.SignalR;
 

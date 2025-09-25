@@ -80,7 +80,7 @@ internal static class DependencyInjection
                 In = Microsoft.OpenApi.Models.ParameterLocation.Header,
                 Description = "Введите JWT токен в формате: Bearer {ваш токен}"
             });
-
+            
             c.AddSecurityRequirement(new()
             {
                 {

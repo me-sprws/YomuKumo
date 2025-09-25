@@ -21,7 +21,7 @@ public sealed class ResidentService(IResidentRepository residentRepository) : IR
             : resident.ToIdDto();
     }
 
-    public async Task<List<ResidentListReadDto>> GetAll(CancellationToken ctk = default)
+    public async Task<List<ResidentListReadDto>> GetAllAsync(CancellationToken ctk = default)
     {
         var query = residentRepository.Get(new(
             IncludeContacts: true, 

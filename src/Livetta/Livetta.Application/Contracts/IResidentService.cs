@@ -5,6 +5,6 @@ namespace Livetta.Application.Contracts;
 public interface IResidentService
 {
     Task<ResidentIdReadDto?> FindAsync(Guid id, CancellationToken ctk = default);
-    Task<List<ResidentListReadDto>> GetAll(CancellationToken ctk = default);
+    Task<List<ResidentListReadDto>> GetAllAsync(CancellationToken ctk = default);
     Task<ResidentListReadDto> CreateAsync(ResidentCreateDto request, CancellationToken ctk = default);
 }

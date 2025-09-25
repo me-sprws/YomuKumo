@@ -30,7 +30,7 @@ public class ResidentsController(IResidentService residentService) : ControllerB
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll(CancellationToken ctk = default)
     {
-        return Ok(await residentService.GetAll(ctk));
+        return Ok(await residentService.GetAllAsync(ctk));
     }
     
     [HttpGet("Apartment")]

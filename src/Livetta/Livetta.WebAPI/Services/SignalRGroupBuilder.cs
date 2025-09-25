@@ -1,4 +1,4 @@
-namespace Livetta.Infrastructure.Services;
+namespace Livetta.WebAPI.Services;
 
 public static class SignalRGroupBuilder
 {
