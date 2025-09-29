@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Livetta.Domain.Repositories;
 
 namespace Livetta.Domain.Contracts;
@@ -14,4 +15,6 @@ public interface IRepository<TEntity> where TEntity : Entity
     Task<bool> AnyAsync(IQueryable<TEntity> query, CancellationToken ctk = default);
     Task<TEntity?> FirstOrDefaultAsync(IQueryable<TEntity> query, Guid id, CancellationToken ctk = default);
     Task<List<TEntity>> ToListAsync(IQueryable<TEntity> query, CancellationToken ctk = default);
+
+    Task<List<T>> SelectToListAsync<T>(IQueryable<TEntity> query, Expression<Func<TEntity, T>> select, CancellationToken ctk = default);
 }

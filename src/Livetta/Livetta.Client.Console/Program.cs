@@ -24,21 +24,8 @@ var connection = new HubConnectionBuilder()
 
 connection.On<MessageReadDto>("OnChatMessage", PrintMessage);
 
-connection.On<Guid>("OnChatDeletion", chatId =>
-{
-    PrintChatDeletion(chatId);
-    
-    // Отписываемся от уведомлений чата:
-    connection.SendAsync("DisconnectFromChatGroup", chatId);
-});
-
-connection.On<ChatReadDto>("OnChatCreation", readDto =>
-{
-    PrintChatCreation(readDto);
-
-    // Подписываемся на уведомления чата:
-    connection.SendAsync("ConnectToChatGroup", readDto.Id);
-});
+connection.On<Guid>("OnChatDeletion", PrintChatDeletion);
+connection.On<ChatReadDto>("OnChatCreation", PrintChatCreation);
 
 await connection.StartAsync();
 

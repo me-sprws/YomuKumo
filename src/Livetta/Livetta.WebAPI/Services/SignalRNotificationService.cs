@@ -22,10 +22,10 @@ public sealed class SignalRNotificationService(IHubContext<ChatHub> hubContext) 
             .SendAsync("OnChatDeletion", chatId);
     }
 
-    public Task OnChatMessageAsync(Guid chatId, MessageReadDto readDto)
+    public Task OnChatMessageAsync(Guid[] chatMembersId, MessageReadDto readDto)
     {
         return hubContext.Clients
-            .Group(WebSocketChannelBuilder.GetChatGroup(chatId))
+            .Users(chatMembersId.Select(u => u.ToString()))
             .SendAsync("OnChatMessage", readDto);
     }
 }

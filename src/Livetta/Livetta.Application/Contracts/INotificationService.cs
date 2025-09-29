@@ -18,7 +18,7 @@ public interface INotificationService
     Task OnChatDeletionAsync(Guid[] usersId, Guid chatId);
     
     /// <summary>
-    /// Уведомляет участников чата <see cref="chatId"/> о новом сообщении <see cref="readDto"/>.
+    /// Уведомляет участников чата <see cref="chatMembersId"/> о новом сообщении <see cref="readDto"/>.
     /// </summary>
-    Task OnChatMessageAsync(Guid chatId, MessageReadDto readDto);
+    Task OnChatMessageAsync(Guid[] chatMembersId, MessageReadDto readDto);
 }

@@ -1,12 +1,14 @@
 using Livetta.Application.Contracts;
 using Livetta.Application.DTO.Messages;
 using Livetta.Application.Extensions.DTOs;
+using Livetta.Application.Extensions.Repositories;
 using Livetta.Domain.Entities.Messaging;
 using Livetta.Domain.Repositories;
 
 namespace Livetta.Application.Services;
 
 public sealed class MessageService(
+    IChatRepository chatRepository,
     IMessageRepository messageRepository,
     INotificationService notificationService
 ) : IMessageService
@@ -20,6 +22,11 @@ public sealed class MessageService(
 
     public async Task<MessageReadDto> CreateAsync(Guid chatId, Guid residentId, MessageCreateDto request)
     {
+        var members = await chatRepository.GetChatMembersAsync(chatId);
+
+        if (members is null)
+            throw new InvalidOperationException("Chat has no members.");
+        
         Message message = new()
         {
             ChatId = chatId,
@@ -32,7 +39,7 @@ public sealed class MessageService(
 
         var messageDto = message.ToDto();
         
-        await notificationService.OnChatMessageAsync(chatId, messageDto);
+        await notificationService.OnChatMessageAsync(members.Select(m => m.ResidentId).ToArray(), messageDto);
 
         return messageDto;
     }

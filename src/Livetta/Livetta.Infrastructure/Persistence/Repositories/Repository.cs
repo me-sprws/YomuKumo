@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Livetta.Domain.Contracts;
 using Livetta.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -45,5 +46,10 @@ public abstract class Repository<TEntity>(LivettaDbContext dbContext) : IReposit
     public Task<List<TEntity>> ToListAsync(IQueryable<TEntity> query, CancellationToken ctk = default)
     {
         return query.ToListAsync(ctk);
+    }
+
+    public Task<List<T>> SelectToListAsync<T>(IQueryable<TEntity> query, Expression<Func<TEntity, T>> select, CancellationToken ctk = default)
+    {
+        return query.Select(select).ToListAsync(ctk);
     }
 }
