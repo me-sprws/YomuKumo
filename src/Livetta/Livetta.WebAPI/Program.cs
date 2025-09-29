@@ -9,7 +9,7 @@ builder.Services.AddOpenApi();
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .WriteTo.Console()
-    .WriteTo.File("logs/log.log", rollingInterval: RollingInterval.Day)
+    // .WriteTo.File("logs/log.log", rollingInterval: RollingInterval.Day)
     .Enrich.FromLogContext()
     .CreateLogger();
 

@@ -3,7 +3,7 @@ using Livetta.Application.Contracts;
 using Livetta.Application.DTO.Chats;
 using Livetta.Application.DTO.Messages;
 using Livetta.Security.Policies;
-using Livetta.WebAPI.Authorization;
+using Livetta.WebAPI.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,6 +23,39 @@ public sealed class ChatsController(
     public async Task<IActionResult> CreateChat(ChatCreateDto request)
     {
         return Ok(await chatService.CreateAsync(GetUserId(), request));
+    }
+    
+    [HttpDelete("{chatId:guid}")]
+    [Authorize]
+    public async Task<IActionResult> DeleteChat(Guid chatId)
+    {
+        if (!await RequireChatMemberAsync(chatId, isOwner: true))
+            return Forbid();
+
+        await chatService.DeleteAsync(chatId);
+        return Ok();
+    }
+    
+    [HttpPost("{chatId:guid}/members")]
+    [Authorize]
+    public async Task<IActionResult> CreateChatMember(Guid chatId, ChatMemberCreateDto request)
+    {
+        if (!await RequireChatMemberAsync(chatId, isOwner: true))
+            return Forbid();
+        
+        await chatService.CreateChatMemberAsync(chatId, request);
+        return Ok();
+    }
+    
+    [HttpDelete("{chatId:guid}/members")]
+    [Authorize]
+    public async Task<IActionResult> DeleteChatMember(Guid chatId, ChatMemberDeleteDto request)
+    {
+        if (!await RequireChatMemberAsync(chatId, isOwner: true))
+            return Forbid();
+        
+        await chatService.DeleteChatMemberAsync(chatId, request);
+        return Ok();
     }
     
     [HttpGet]
@@ -54,10 +87,6 @@ public sealed class ChatsController(
 
     Guid GetUserId() => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-    async Task<bool> RequireChatMemberAsync(Guid chatId) =>
-        (await authorizationService.AuthorizeAsync(
-            User, 
-            new ChatMemberAuthContext(chatId), 
-            LivettaPolicy.Messaging.ChatMember)
-        ).Succeeded;
+    async Task<bool> RequireChatMemberAsync(Guid chatId, bool isOwner = false) =>
+        (await authorizationService.AuthorizeChatMemberAsync(User, new(chatId, isOwner))).Succeeded;
 }

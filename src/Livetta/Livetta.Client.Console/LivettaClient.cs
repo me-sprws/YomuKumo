@@ -36,7 +36,7 @@ public sealed class LivettaClient
         if (string.IsNullOrWhiteSpace(_jwtToken))
             throw new AuthenticationException("No access token");
         
-        client.DefaultRequestHeaders.Authorization = new("Bearer", _jwtToken);
+        Authorize(client);
 
         var request = new MessageCreateDto(text);
         
@@ -46,6 +46,28 @@ public sealed class LivettaClient
         GuardResponse(response);
 
         return await response.Content.ReadFromJsonAsync<MessageReadDto>(ctk).ConfigureAwait(false);
+    }
+    
+    public async Task<MessageReadDto[]?> GetMessagesAsync(Guid chatId, int take, int offset, CancellationToken ctk = default)
+    {
+        using var client = new HttpClient();
+
+        if (string.IsNullOrWhiteSpace(_jwtToken))
+            throw new AuthenticationException("No access token");
+        
+        Authorize(client);
+
+        using var response = await client.GetAsync(
+            BaseApiUri + $"v1/Chats/{chatId}/messages?take={take}&offset={offset}", ctk).ConfigureAwait(false);
+        
+        GuardResponse(response);
+
+        return await response.Content.ReadFromJsonAsync<MessageReadDto[]>(ctk).ConfigureAwait(false);
+    }
+
+    void Authorize(HttpClient client)
+    {
+        client.DefaultRequestHeaders.Authorization = new("Bearer", _jwtToken);
     }
 
     static void GuardResponse(HttpResponseMessage response, HttpStatusCode code = HttpStatusCode.OK)

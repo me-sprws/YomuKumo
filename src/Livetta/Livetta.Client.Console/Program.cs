@@ -1,4 +1,5 @@
-﻿using Livetta.Application.DTO.Messages;
+﻿using Livetta.Application.DTO.Chats;
+using Livetta.Application.DTO.Messages;
 using Livetta.Client.Console;
 using Livetta.Core.Extensions;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -21,14 +22,33 @@ var connection = new HubConnectionBuilder()
     .WithAutomaticReconnect()
     .Build();
 
-connection.On<MessageReadDto>("OnChatMessage", readDto =>
+connection.On<MessageReadDto>("OnChatMessage", PrintMessage);
+
+connection.On<Guid>("OnChatDeletion", chatId =>
 {
-    Console.WriteLine($"[c:{readDto.ChatId.Shortify()}] [r:{readDto.ResidentId.Shortify()}] {readDto.Text}");
+    PrintChatDeletion(chatId);
+    
+    // Отписываемся от уведомлений чата:
+    connection.SendAsync("DisconnectFromChatGroup", chatId);
+});
+
+connection.On<ChatReadDto>("OnChatCreation", readDto =>
+{
+    PrintChatCreation(readDto);
+
+    // Подписываемся на уведомления чата:
+    connection.SendAsync("ConnectToChatGroup", readDto.Id);
 });
 
 await connection.StartAsync();
 
 Console.WriteLine("Started SignalR.");
+
+var messages = await client.GetMessagesAsync(Guid.Parse("019944d7-6656-77cd-ad7f-24bbdc2a5e78"), 15, 0);
+
+foreach (var m in messages.OrderBy(m => m.CreatedAt))
+    PrintMessage(m);
+
 Console.WriteLine();
 
 do
@@ -41,3 +61,18 @@ do
     Console.WriteLine();
 
 } while (true);
+
+static void PrintMessage(MessageReadDto readDto)
+{
+    Console.WriteLine($"[c:{readDto.ChatId.Shortify()}] [r:{readDto.ResidentId.Shortify()}] {readDto.Text}");
+}
+
+static void PrintChatCreation(ChatReadDto readDto)
+{
+    Console.WriteLine($"ПОЛЬЗОВАТЕЛЬ (ВЫ) ДОБАВЛЕН В ЧАТ {readDto.Id.Shortify()}!");
+}
+
+static void PrintChatDeletion(Guid chatId)
+{
+    Console.WriteLine($"ПОЛЬЗОВАТЕЛЬ (ВЫ) БЫЛ ИЗГНАН ИЗ ЧАТА {chatId.Shortify()}!");
+}

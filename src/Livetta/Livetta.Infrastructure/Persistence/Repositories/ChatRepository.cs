@@ -10,6 +10,11 @@ public class ChatRepository(LivettaDbContext dbContext) : Repository<Chat>(dbCon
     {
         var builder = QueryableSet;
 
+        if (options.IncludeChatMembers)
+        {
+            builder = builder.Include(x => x.Residents);
+        }
+        
         if (options.IncludeResidents)
         {
             builder = builder

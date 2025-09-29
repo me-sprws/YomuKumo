@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Livetta.WebAPI.Authorization;
 
-public record ChatMemberAuthContext(Guid ChatId);
+public record ChatMemberAuthContext(Guid ChatId, bool CheckOwner = false);
 
 public record ChatMemberRequirement : IAuthorizationRequirement;
 
@@ -18,6 +18,8 @@ public sealed class ChatMemberAuthHandler(IChatRepository chatRepository) : Auth
         {
             context.Fail();
         }
+        
+        // TODO: CheckOwner
 
         if (await chatRepository.IsChatMemberAsync(residentId, chat.ChatId))
             context.Succeed(requirement);

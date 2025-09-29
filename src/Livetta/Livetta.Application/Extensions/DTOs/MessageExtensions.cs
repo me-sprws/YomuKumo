@@ -7,6 +7,6 @@ public static class MessageExtensions
 {
     public static MessageReadDto ToDto(this Message message)
     {
-        return new(message.Id, message.ChatId, message.ResidentId, message.Text);
+        return new(message.Id, message.ChatId, message.ResidentId, message.Text, message.CreatedAt, message.UpdatedAt);
     }
 }

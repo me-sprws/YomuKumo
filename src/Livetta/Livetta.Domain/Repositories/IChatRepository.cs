@@ -7,6 +7,7 @@ public record GetChatOptions(
     Guid ChatId = default,
     Guid ResidentId = default,
     bool IncludeResidents = false,
+    bool IncludeChatMembers = false,
     bool IncludeLastMessage = false,
     bool AsNoTracking = false    
 );
