@@ -16,9 +16,10 @@ public sealed class IdentityController(
 ) : ControllerBase
 {
     [HttpPost("{residentId:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Login(Guid residentId)
     {
-        var get = residentRepository.Get(new(IncludeContacts: true));
+        var get = residentRepository.Get(new(IncludeContacts: true, AsNoTracking: true));
         
         var resident = await residentRepository.FirstOrDefaultAsync(get, residentId);
 

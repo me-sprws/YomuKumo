@@ -1,4 +1,4 @@
-namespace Livetta.Core.Extensions;
+namespace Livetta.Client.Console.Extensions;
 
 public static class GuidExtensions
 {

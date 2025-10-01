@@ -22,7 +22,7 @@ public sealed class MessageService(
 
     public async Task<MessageReadDto> CreateAsync(Guid chatId, Guid residentId, MessageCreateDto request)
     {
-        var members = await chatRepository.GetChatMembersAsync(chatId);
+        var members = await chatRepository.FindChatMembersNoTrackingAsync(chatId);
 
         if (members is null)
             throw new InvalidOperationException("Chat has no members.");

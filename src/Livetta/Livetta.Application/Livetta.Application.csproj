@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Livetta.Core\Livetta.Core.csproj" />
       <ProjectReference Include="..\Livetta.Domain\Livetta.Domain.csproj" />
     </ItemGroup>
 

@@ -1,7 +1,7 @@
 ﻿using Livetta.Application.DTO.Chats;
 using Livetta.Application.DTO.Messages;
 using Livetta.Client.Console;
-using Livetta.Core.Extensions;
+using Livetta.Client.Console.Extensions;
 using Microsoft.AspNetCore.SignalR.Client;
 
 Console.WriteLine("Starting.");

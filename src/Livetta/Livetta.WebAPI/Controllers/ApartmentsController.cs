@@ -11,14 +11,14 @@ public class ApartmentsController(IApartmentService apartmentService) : Controll
 {
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> Post(ApartmentCreateDto request, CancellationToken ctk = default)
+    public async Task<IActionResult> CreateApartment(ApartmentCreateDto request, CancellationToken ctk = default)
     {
         return Ok(await apartmentService.CreateAsync(request, ctk));
     }
     
     [HttpPut("{apartmentId:guid}/{residentId:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> Put(Guid apartmentId, Guid residentId, ResidentAssignDto request, CancellationToken ctk = default)
+    public async Task<IActionResult> AssignApartmentToResident(Guid apartmentId, Guid residentId, ResidentAssignDto request, CancellationToken ctk = default)
     {
         await apartmentService.AssignAsync(residentId, apartmentId, request, ctk);
         return Ok();
@@ -26,7 +26,7 @@ public class ApartmentsController(IApartmentService apartmentService) : Controll
     
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAll(CancellationToken ctk = default)
+    public async Task<IActionResult> GetAllApartments(CancellationToken ctk = default)
     {
         return Ok(await apartmentService.GetAllAsync(ctk));
     }

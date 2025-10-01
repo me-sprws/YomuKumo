@@ -1,4 +1,4 @@
-﻿namespace Livetta.Security.Policies;
+﻿namespace Livetta.Application.Authorization;
 
 public static class LivettaPolicy
 {
@@ -6,7 +6,6 @@ public static class LivettaPolicy
     {
         const string Namespace = nameof(Messaging);
         
-        public const string CanCreateChats = $"{Namespace}.{nameof(CanCreateChats)}";
         public const string ChatMember = $"{Namespace}.{nameof(ChatMember)}";
     }
 }

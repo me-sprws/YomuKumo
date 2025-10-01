@@ -13,7 +13,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Livetta.Application\Livetta.Application.csproj" />
-      <ProjectReference Include="..\Livetta.Core\Livetta.Core.csproj" />
     </ItemGroup>
 
 </Project>

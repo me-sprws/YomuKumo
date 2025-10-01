@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using Livetta.Security.Policies;
+using Livetta.Application.Authorization;
 using Livetta.WebAPI.Authorization;
 using Microsoft.AspNetCore.Authorization;
 

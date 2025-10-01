@@ -29,7 +29,6 @@
       <ProjectReference Include="..\Livetta.Application\Livetta.Application.csproj" />
       <ProjectReference Include="..\Livetta.Domain\Livetta.Domain.csproj" />
       <ProjectReference Include="..\Livetta.Infrastructure\Livetta.Infrastructure.csproj" />
-      <ProjectReference Include="..\Livetta.Security.Policies\Livetta.Security.Policies.csproj" />
     </ItemGroup>
 
 </Project>

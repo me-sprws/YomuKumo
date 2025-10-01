@@ -1,10 +1,10 @@
 using System.Text;
+using Livetta.Application.Authorization;
 using Livetta.Application.Contracts;
 using Livetta.Application.Services;
 using Livetta.Domain.Repositories;
 using Livetta.Infrastructure.Persistence;
 using Livetta.Infrastructure.Persistence.Repositories;
-using Livetta.Security.Policies;
 using Livetta.WebAPI.Authorization;
 using Livetta.WebAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -46,9 +46,6 @@ internal static class DependencyInjection
     public static WebApplicationBuilder AddLivettaAuthorization(this WebApplicationBuilder builder)
     {
         builder.Services.AddAuthorizationBuilder()
-            .AddPolicy(
-                LivettaPolicy.Messaging.CanCreateChats,
-                p => p.RequireAuthenticatedUser())
             .AddPolicy(LivettaPolicy.Messaging.ChatMember,
                 p => p.Requirements.Add(new ChatMemberRequirement()));
 
